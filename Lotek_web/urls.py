@@ -20,5 +20,7 @@ from Lotek import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^random$', views.random, name='random'),
+    url(r'^ranking', views.ranking, name='ranking'),
     url(r'^admin/', admin.site.urls),
 ]

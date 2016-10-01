@@ -7,18 +7,16 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     {% load static %}
 
@@ -26,7 +24,163 @@
 </head>
 <body>
 
-<h1 class="title">Wybierz swoje liczby</h1>
+<h2 class="title">Wybierz swoje liczby</h2>
+
+    {% for row in numbers %}
+    <div class="center-table">
+        {% for j in row %}
+        <div id="{{ j }}" class="ball" onclick="ballClicked(this)">{{ j }}</div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+    <div class="separator"></div>
+
+    <div id="your_balls" class="center-table">
+
+        <div id="field_0" class="gray_ball">_</div>
+        <div id="field_1" class="gray_ball">_</div>
+        <div id="field_2" class="gray_ball">_</div>
+        <div id="field_3" class="gray_ball">_</div>
+        <div id="field_4" class="gray_ball">_</div>
+        <div id="field_5" class="gray_ball">_</div>
+
+    </div>
+
+    <button id="random_button" type="button" class="btn btn-primary center-block" onclick="random()" disabled>Losuj</button>
+
+    <div class="progress" hidden>
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0"
+             aria-valuemax="100" style="width: 100%">
+            <span>Losowanie...</span>
+        </div>
+    </div>
+
+    <div id="summary" hidden>
+        <h4 class="title">Twoje liczby zostały wybrane w losowaniu o numerze:</h4>
+        <h3 id="random_number" class="title"></h3>
+        <h4 class="title">Na kupony trzeba byłoby wydać:</h4>
+        <h3 id="money" class="title"></h3>
+        <h4 class="title">Zajęło by to:</h4>
+        <h3 id="time" class="title"></h3>
+        <h4 class="title">Twój wynik w rankingu:</h4>
+        <h3 id="order" class="title"></h3>
+    </div>
+
+    <BR>
+
+    <div id="play_again_container">
+    </div>
+
+    <div>
+        <h4 class="title">Ranking:</h4>
+        <table id="ranking" class="table">
+        </table>
+    </div>
+
+<script>
+
+var selectedNumbers = [];
+
+function ballClicked(element) {
+    if (selectedNumbers.length >= 6) {
+        return;
+    }
+
+    if (selectedNumbers.contains(parseInt(element.id))) {
+        return;
+    }
+
+    selectedNumbers.push(parseInt(element.id));
+    $("#" +element.id).css("background-image", "url(\"static/gray_ball.png\")");
+    selectedNumbers.sort(function(a, b){return a - b});
+
+    var i;
+    for (i = 0; i < selectedNumbers.length; i++) {
+        $("#field_" + i).html(selectedNumbers[i]);
+        $("#field_" + i).css("background-image", "url(\"static/ball.png\")");
+    }
+
+    if (selectedNumbers.length == 6) {
+        $("#random_button").removeAttr('disabled')
+        return;
+    }
+}
+
+function random() {
+
+    $.post({
+        url: "/random",
+      data: {
+        selectedNumbers: selectedNumbers,
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function( result ) {
+
+        var number = result["number"]
+        var order = result["order"]
+
+        $(".progress").hide();
+        $("#summary").show();
+        $("#random_number").html(number.format(0, 3, '.', ','));
+        $("#money").html((number * 3).format(0, 3, '.', ',') + " PLN");
+        $("#time").html((number / 3 / (365 / 7)).format(2, 3, '.', ',') + " lat");
+        $("#order").html(order);
+
+        refreshRanking();
+
+        $("#play_again_container").html("<button id=\"play_again_button\" type=\"button\" class=\"btn btn-primary center-block\" onclick=\"playAgain()\">Zagraj jeszcze raz</button>");
+      }
+    });
+
+    $("#random_button").hide();
+    $(".progress").show();
+}
+
+function refreshRanking() {
+    $.ajax({
+      url: "/ranking",
+      data: {
+      },
+      success: function( result ) {
+        var i;
+        $("#ranking").empty();
+        $("#ranking").append("<thead><tr><td>#</td><td>Result</td></tr></thead>");
+        var content = "<tbody>"
+        for (i = 0; i < result.length; i++) {
+            content += "<tr><td>" + (i + 1) + "</td><td>" + result[i].format(0, 3, '.', ',') + "</td></tr>";
+        }
+        content += "</tbody>"
+        $("#ranking").append(content);
+      }
+    });
+}
+
+function playAgain() {
+    location.reload();
+}
+
+refreshRanking()
+
+Array.prototype.contains = function(obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+Number.prototype.format = function(n, x, s, c) {
+    var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+        num = this.toFixed(Math.max(0, ~~n));
+
+    return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+};
+
+
+</script>
 
 </body>
 </html>

@@ -1,3 +1,19 @@
+h1, .h1, h2, .h2, h3, .h3 {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.center-table {
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .center-block {
   display: block;
   margin-left: auto;
@@ -6,4 +22,51 @@
 
 .title {
   text-align: center;
+}
+
+.ball {
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  font-family: Arial;
+  background-image: url("ball.png");
+  background-size: 100% 100%;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  margin: 2px;
+}
+
+.gray_ball {
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  font-family: Arial;
+  background-image: url("gray_ball.png");
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  margin: 3px;
+}
+
+.progress {
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.separator {
+  margin-top: 3px;
+  background-color: gray;
+  height: 1px;
+}
+
+#your_balls {
+    padding: 7px 0;
+}
+
+#ranking {
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
 }
