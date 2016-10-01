@@ -140,6 +140,7 @@ function random() {
         $("#play_again_container").html("<button id=\"play_again_button\" type=\"button\" class=\"btn btn-primary center-block\" onclick=\"playAgain()\">Zagraj jeszcze raz</button>");
       }).fail(function() {
 
+        $(".progress").hide();
         $("#fail").show();
 
         $("#play_again_container").html("<button id=\"play_again_button\" type=\"button\" class=\"btn btn-primary center-block\" onclick=\"playAgain()\">Zagraj jeszcze raz</button>");
