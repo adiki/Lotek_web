@@ -159,7 +159,7 @@ function refreshRanking() {
       success: function( result ) {
         var i;
         $("#ranking").empty();
-        $("#ranking").append("<thead><tr><td>#</td><td>Result</td></tr></thead>");
+        $("#ranking").append("<thead><tr><td>#</td><td>Numer losowania</td></tr></thead>");
         var content = "<tbody>"
         for (i = 0; i < result.length; i++) {
             content += "<tr><td>" + (i + 1) + "</td><td>" + result[i].format(0, 3, '.', ',') + "</td></tr>";
