@@ -10,13 +10,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
 
     {% load static %}
 
@@ -26,57 +30,61 @@
 
 <h2 class="title">Wybierz swoje liczby</h2>
 
-    {% for row in numbers %}
-    <div class="center-table">
-        {% for j in row %}
-        <div id="{{ j }}" class="ball" onclick="ballClicked(this)">{{ j }}</div>
-        {% endfor %}
-    </div>
+{% for row in numbers %}
+<div class="center-table">
+    {% for j in row %}
+    <div id="{{ j }}" class="ball" onclick="ballClicked(this)">{{ j }}</div>
     {% endfor %}
+</div>
+{% endfor %}
 
-    <div class="separator"></div>
+<div class="separator"></div>
 
-    <div id="your_balls" class="center-table">
+<div id="your_balls" class="center-table">
 
-        <div id="field_0" class="gray_ball">_</div>
-        <div id="field_1" class="gray_ball">_</div>
-        <div id="field_2" class="gray_ball">_</div>
-        <div id="field_3" class="gray_ball">_</div>
-        <div id="field_4" class="gray_ball">_</div>
-        <div id="field_5" class="gray_ball">_</div>
+    <div id="field_0" class="gray_ball">_</div>
+    <div id="field_1" class="gray_ball">_</div>
+    <div id="field_2" class="gray_ball">_</div>
+    <div id="field_3" class="gray_ball">_</div>
+    <div id="field_4" class="gray_ball">_</div>
+    <div id="field_5" class="gray_ball">_</div>
 
+</div>
+
+<button id="random_button" type="button" class="btn btn-primary center-block" onclick="random()" disabled>Losuj</button>
+
+<div class="progress" hidden>
+    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0"
+         aria-valuemax="100" style="width: 100%">
+        <span>Losowanie...</span>
     </div>
+</div>
 
-    <button id="random_button" type="button" class="btn btn-primary center-block" onclick="random()" disabled>Losuj</button>
+<div id="summary" hidden>
+    <h4 class="title">Twoje liczby zostały wybrane w losowaniu o numerze:</h4>
+    <h3 id="random_number" class="title"></h3>
+    <h4 class="title">Na kupony trzeba byłoby wydać:</h4>
+    <h3 id="money" class="title"></h3>
+    <h4 class="title">Zajęło by to:</h4>
+    <h3 id="time" class="title"></h3>
+    <h4 class="title">Twój wynik w rankingu:</h4>
+    <h3 id="order" class="title"></h3>
+</div>
 
-    <div class="progress" hidden>
-        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0"
-             aria-valuemax="100" style="width: 100%">
-            <span>Losowanie...</span>
-        </div>
-    </div>
+<div id="fail" hidden>
+    <h4 class="title">Twoje liczby tym razem nie zostały wylosowane</h4>
+</div>
 
-    <div id="summary" hidden>
-        <h4 class="title">Twoje liczby zostały wybrane w losowaniu o numerze:</h4>
-        <h3 id="random_number" class="title"></h3>
-        <h4 class="title">Na kupony trzeba byłoby wydać:</h4>
-        <h3 id="money" class="title"></h3>
-        <h4 class="title">Zajęło by to:</h4>
-        <h3 id="time" class="title"></h3>
-        <h4 class="title">Twój wynik w rankingu:</h4>
-        <h3 id="order" class="title"></h3>
-    </div>
+<BR>
 
-    <BR>
+<div id="play_again_container">
+</div>
 
-    <div id="play_again_container">
-    </div>
-
-    <div>
-        <h4 class="title">Ranking:</h4>
-        <table id="ranking" class="table">
-        </table>
-    </div>
+<div>
+    <h4 class="title">Ranking:</h4>
+    <table id="ranking" class="table">
+    </table>
+</div>
 
 <script>
 
@@ -115,7 +123,7 @@ function random() {
         selectedNumbers: selectedNumbers,
         csrfmiddlewaretoken: '{{ csrf_token }}'
       },
-      success: function( result ) {
+    }).done(function( result ) {
 
         var number = result["number"]
         var order = result["order"]
@@ -130,8 +138,13 @@ function random() {
         refreshRanking();
 
         $("#play_again_container").html("<button id=\"play_again_button\" type=\"button\" class=\"btn btn-primary center-block\" onclick=\"playAgain()\">Zagraj jeszcze raz</button>");
-      }
-    });
+      }).fail(function() {
+
+        $("#fail").show();
+
+        $("#play_again_container").html("<button id=\"play_again_button\" type=\"button\" class=\"btn btn-primary center-block\" onclick=\"playAgain()\">Zagraj jeszcze raz</button>");
+      });
+
 
     $("#random_button").hide();
     $(".progress").show();
@@ -178,6 +191,7 @@ Number.prototype.format = function(n, x, s, c) {
 
     return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
 };
+
 
 
 </script>
