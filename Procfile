@@ -1,1 +1,1 @@
-web: gunicorn Lotek_web.wsgi --timeout 5
+web: gunicorn Lotek_web.wsgi --timeout 120
