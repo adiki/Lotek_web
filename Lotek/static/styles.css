@@ -70,3 +70,15 @@ h1, .h1, h2, .h2, h3, .h3 {
     margin-left: auto;
     margin-right: auto;
 }
+
+#summary {
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#randoms_number_slider {
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}

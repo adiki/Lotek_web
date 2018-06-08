@@ -51,6 +51,10 @@
 
 </div>
 
+<h3 id="randoms_number" class="title">Ilość losowań: 1000</h3>
+<input id="randoms_number_slider" type="range" min="1" max="1000" value="1000" onchange="randomsNumberChanged(this.value)" oninput="randomsNumberChanged(this.value)">
+<BR>
+
 <button id="random_button" type="button" class="btn btn-primary center-block" onclick="random()" disabled>Losuj</button>
 
 <div class="progress" hidden>
@@ -61,24 +65,42 @@
 </div>
 
 <div id="summary" hidden>
-    <h4 class="title">Twoje liczby zostały wybrane w losowaniu o numerze:</h4>
-    <h3 id="random_number" class="title"></h3>
-    <h4 class="title">Na kupony trzeba byłoby wydać:</h4>
-    <h3 id="money" class="title"></h3>
-    <h4 class="title">Zajęło by to:</h4>
-    <h3 id="time" class="title"></h3>
-    <h4 class="title">Twój wynik w rankingu:</h4>
-    <h3 id="order" class="title"></h3>
+
+    <table class="table">
+        <tr><td><h4>6ki</h4></td><td><h4 id="sixes"></h4></td><td><h4 id="sixes_pln"></h4></td></tr>
+        <tr><td><h4>5ki</h4></td><td><h4 id="fives"></h4></td><td><h4 id="fives_pln"></h4></td></tr>
+        <tr><td><h4>4ki</h4></td><td><h4 id="fours"></h4></td><td><h4 id="fours_pln"></h4></td></tr>
+        <tr><td><h4>3ki</h4></td><td><h4 id="threes"></h4></td><td><h4 id="threes_pln"></h4></td></tr>
+        <tr><td><h4>2ki</h4></td><td><h4 id="twos"></h4></td><td><h4 id="twos_pln">0 PLN</h4></td></tr>
+        <tr><td><h4>1ki</h4></td><td><h4 id="ones"></h4></td><td><h4 id="ones_pln">0 PLN</h4></td></tr>
+        <tr><td><h4>Zera</h4></td><td><h4 id="zeros"></h4></td><td><h4 id="zeros_pln">0 PLN</h4></td></tr>
+    </table>
+    <!--<h4 class="title">Twoje liczby zostały wybrane w losowaniu o numerze:</h4>-->
+    <!--<h3 id="random_number" class="title"></h3>-->
+    <!--<h4 class="title">Na kupony trzeba byłoby wydać:</h4>-->
+    <!--<h3 id="money" class="title"></h3>-->
+    <!--<h4 class="title">Zajęło by to:</h4>-->
+    <!--<h3 id="time" class="title"></h3>-->
+    <!--<h4 class="title">Twój wynik w rankingu:</h4>-->
+    <!--<h3 id="order" class="title"></h3>-->
 </div>
 
+
+<BR>
+
+<h3 id="your_money" class="title">Twoje saldo: 0 PLN</h3>
+<h3 id="loteks_money" class="title">Lotka saldo: 0 PLN</h3>
+
 <div id="fail" hidden>
-    <h4 class="title">Twoje liczby tym razem nie zostały wylosowane</h4>
+    <h4 class="title">Wystąpił problem</h4>
 </div>
 
 <BR>
 
 <div id="play_again_container">
 </div>
+
+<BR>
 
 <div>
     <h4 class="title">Ranking:</h4>
@@ -89,6 +111,34 @@
 <script>
 
 var selectedNumbers = [];
+
+if (window.localStorage.getItem("token") == null) {
+    $.post({
+        url: "/user",
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+    }).done(function( result ) {
+        window.localStorage.setItem("token", result["token"]);
+        refreshMoney();
+    });
+} else {
+    refreshMoney()
+}
+
+function refreshMoney() {
+    $.post({
+        url: "/money",
+        data: {
+            token: window.localStorage.getItem("token"),
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+    }).done(function( result ) {
+        $("#your_money").html("Twoje saldo: " + result["yours"] + " PLN");
+        $("#loteks_money").html("Lotka saldo: " + result["loteks"] + " PLN");
+        setTimeout(refreshRanking, 500);
+    });
+}
 
 function ballClicked(element) {
     if (selectedNumbers.length >= 6) {
@@ -116,11 +166,12 @@ function ballClicked(element) {
 }
 
 function random() {
-
     $.post({
         url: "/random",
       data: {
         selectedNumbers: selectedNumbers,
+        randomsNumber: $("#randoms_number_slider").val(),
+        token: window.localStorage.getItem("token"),
         csrfmiddlewaretoken: '{{ csrf_token }}'
       },
     }).done(function( result ) {
@@ -129,13 +180,22 @@ function random() {
         var order = result["order"]
 
         $(".progress").hide();
+        $("#randoms_number").hide();
+        $("#randoms_number_slider").hide();
         $("#summary").show();
-        $("#random_number").html(number.format(0, 3, '.', ','));
-        $("#money").html((number * 3).format(0, 3, '.', ',') + " PLN");
-        $("#time").html((number / 3 / (365 / 7)).format(2, 3, '.', ',') + " lat");
-        $("#order").html(order);
+        $("#sixes").html(result["results"][6]);
+        $("#sixes_pln").html(result["results"][6] * 2000000 + " PLN");
+        $("#fives").html(result["results"][5]);
+        $("#fives_pln").html(result["results"][5] * 3600 + " PLN");
+        $("#fours").html(result["results"][4]);
+        $("#fours_pln").html(result["results"][4] * 120 + " PLN");
+        $("#threes").html(result["results"][3]);
+        $("#threes_pln").html(result["results"][3] * 24 + " PLN");
+        $("#twos").html(result["results"][2]);
+        $("#ones").html(result["results"][1]);
+        $("#zeros").html(result["results"][0]);
 
-        refreshRanking();
+        refreshMoney();
 
         $("#play_again_container").html("<button id=\"play_again_button\" type=\"button\" class=\"btn btn-primary center-block\" onclick=\"playAgain()\">Zagraj jeszcze raz</button>");
       }).fail(function() {
@@ -159,10 +219,10 @@ function refreshRanking() {
       success: function( result ) {
         var i;
         $("#ranking").empty();
-        $("#ranking").append("<thead><tr><td>#</td><td>Numer losowania</td></tr></thead>");
+        $("#ranking").append("<thead><tr><td>#</td><td>Saldo</td><td>Ilość losowań</td></tr></thead>");
         var content = "<tbody>"
         for (i = 0; i < result.length; i++) {
-            content += "<tr><td>" + (i + 1) + "</td><td>" + result[i].format(0, 3, '.', ',') + "</td></tr>";
+            content += "<tr><td>" + (i + 1) + "</td><td>" + result[i].money  + " PLN</td><td>" + result[i].randoms + "</td></tr>";
         }
         content += "</tbody>"
         $("#ranking").append(content);
@@ -174,7 +234,9 @@ function playAgain() {
     location.reload();
 }
 
-refreshRanking()
+function randomsNumberChanged(value) {
+    $("#randoms_number").text("Ilość losowań: " + value);
+}
 
 Array.prototype.contains = function(obj) {
     var i = this.length;

@@ -3,11 +3,11 @@ from django.contrib import admin
 # Register your models here.
 
 
-from .models import Result
+from .models import User
 
 
-class ResultAdmin(admin.ModelAdmin):
-    fields = ['date', 'number']
-    list_display = ['date', 'number']
+class UserAdmin(admin.ModelAdmin):
+    fields = ['money', 'randoms']
+    list_display = ['money', 'randoms']
 
-admin.site.register(Result, ResultAdmin)
+admin.site.register(User, UserAdmin)

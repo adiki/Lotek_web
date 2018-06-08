@@ -22,5 +22,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^random$', views.random, name='random'),
     url(r'^ranking', views.ranking, name='ranking'),
+    url(r'^user', views.user, name='user'),
+    url(r'^money', views.money, name='money'),
     url(r'^admin/', admin.site.urls),
 ]
