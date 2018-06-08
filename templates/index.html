@@ -193,17 +193,6 @@ Number.prototype.format = function(n, x, s, c) {
     return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
 };
 
-function setViewport(){
-    var meta = window.parent.document.createElement('meta');
-    meta.name= "viewport";
-    meta.content = "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
-    document.getElementsByTagName('head')[0].appendChild(meta);
-}
-
-$(document).ready(function() {
-    setViewport();
-});
-
 </script>
 
 </body>
