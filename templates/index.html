@@ -134,8 +134,8 @@ function refreshMoney() {
             csrfmiddlewaretoken: '{{ csrf_token }}'
         },
     }).done(function( result ) {
-        $("#your_money").html("Twoje saldo: " + result["yours"] + " PLN");
-        $("#loteks_money").html("Lotka saldo: " + result["loteks"] + " PLN");
+        $("#your_money").html("Twoje saldo: " + result["yours"].format(0, 3, '.', ',') + " PLN");
+        $("#loteks_money").html("Lotka saldo: " + result["loteks"].format(0, 3, '.', ',') + " PLN");
         setTimeout(refreshRanking, 500);
     });
 }
@@ -222,7 +222,7 @@ function refreshRanking() {
         $("#ranking").append("<thead><tr><td>#</td><td>Saldo</td><td>Ilość losowań</td></tr></thead>");
         var content = "<tbody>"
         for (i = 0; i < result.length; i++) {
-            content += "<tr><td>" + (i + 1) + "</td><td>" + result[i].money  + " PLN</td><td>" + result[i].randoms + "</td></tr>";
+            content += "<tr><td>" + (i + 1) + "</td><td>" + result[i].money.format(0, 3, '.', ',')  + " PLN</td><td>" + result[i].randoms + "</td></tr>";
         }
         content += "</tbody>"
         $("#ranking").append(content);
