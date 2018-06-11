@@ -235,7 +235,7 @@ function playAgain() {
 }
 
 function randomsNumberChanged(value) {
-    $("#randoms_number").text("Ilość losowań: " + ((int)value).format(0, 3, '.', ','));
+    $("#randoms_number").text("Ilość losowań: " + Number(value).format(0, 3, '.', ','));
 }
 
 Array.prototype.contains = function(obj) {
