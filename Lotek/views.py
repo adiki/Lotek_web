@@ -1,14 +1,13 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from random import randint
+from random import shuffle
 from datetime import datetime
 import json
 import math
 import uuid
 
 from Lotek.models import User
-
-lookup = {}
 
 
 def index(request):
@@ -30,8 +29,7 @@ def random(request):
 
     results = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 ,6: 0 }
     for i in range(0, randoms_number):
-        number = randint(0, 13983815)
-        randomed = lookup[number]
+        randomed = random_numbers()
 
         result = 0
         for selected_number in selected_numbers:
@@ -99,27 +97,16 @@ def random_numbers():
 
     return sorted(numbers)
 
-def newton(x, y):
-    if y == x:
-        return 1
-    elif y == 1:  # see georg's comment
-        return x
-    elif y > x:  # will be executed only if y != 1 and y != x
-        return 0
-    else:  # will be executed only if y != 1 and y != x and x <= y
-        a = math.factorial(x)
-        b = math.factorial(y)
-        c = math.factorial(x - y)  # that appears to be useful to get the correct result
-        div = a // (b * c)
-        return div
-
-for a in range(1, 45):
-    for b in range(a + 1, 46):
-        for c in range(b + 1, 47):
-            for d in range(c + 1, 48):
-                for e in range(d + 1, 49):
-                    for f in range(e + 1, 50):
-                        r = number_for_selected_numbers([a,b,c,d,e,f])
-                        lookup[r] = [a,b,c,d,e,f]
-                        print(str(r) + str(lookup[13983815]))
-print('Done')
+# def newton(x, y):
+#     if y == x:
+#         return 1
+#     elif y == 1:  # see georg's comment
+#         return x
+#     elif y > x:  # will be executed only if y != 1 and y != x
+#         return 0
+#     else:  # will be executed only if y != 1 and y != x and x <= y
+#         a = math.factorial(x)
+#         b = math.factorial(y)
+#         c = math.factorial(x - y)  # that appears to be useful to get the correct result
+#         div = a // (b * c)
+#         return div
